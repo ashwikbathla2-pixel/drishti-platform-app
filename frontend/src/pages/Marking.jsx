@@ -184,8 +184,9 @@ export default function Marking() {
                 className="flex-1 flex items-center justify-center gap-2 rounded-xl glass py-2.5 font-mono uppercase tracking-[0.15em] text-[10px] hover:bg-white/5 transition-colors disabled:opacity-50">
                 <Save className="h-3.5 w-3.5" /> Save Draft
               </button>
-              <button onClick={() => submit(true)} disabled={submitting} data-testid="submit-grading"
-                className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-accent text-[#050505] py-2.5 font-mono uppercase tracking-[0.15em] text-[10px] hover:bg-white transition-colors disabled:opacity-50">
+              <button onClick={() => submit(true)} disabled={submitting || !allMarked || !allViewed} data-testid="submit-grading"
+                title={!allMarked ? "Mark every question first" : !allViewed ? "View all pages first" : ""}
+                className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-accent text-[#050505] py-2.5 font-mono uppercase tracking-[0.15em] text-[10px] hover:bg-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
                 {submitting ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <CheckCheck className="h-3.5 w-3.5" />} Submit Grading
               </button>
             </div>

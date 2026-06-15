@@ -2,7 +2,9 @@
 booklet viewer something real to display for seeded demo bundles.
 """
 import io
+import base64
 import hashlib
+import textwrap
 from PIL import Image, ImageDraw, ImageFont
 
 
@@ -74,3 +76,93 @@ def gen_answer_page(candidate_code: str, page_no: int, subject: str = "Business 
     buf = io.BytesIO()
     img.save(buf, format="JPEG", quality=80)
     return buf.getvalue()
+
+
+def _outcome(candidate_code: str, q_no: str) -> str:
+    """Deterministic per-candidate, per-question outcome: mostly 'full'."""
+    h = int(hashlib.md5(f"{candidate_code}-{q_no}".encode()).hexdigest(), 16)
+    r = h % 10
+    if r in (0,):
+        return "blank"      # ~10% not attempted -> 0 / null
+    if r in (1, 2):
+        return "partial"    # ~20% partial credit
+    return "full"           # ~70% correct / full
+
+
+def _student_answer(q: dict, outcome: str) -> str:
+    """Build the candidate's written answer for one scheme question."""
+    qtype = q.get("type")
+    if outcome == "blank":
+        return "Not attempted."
+    if qtype in ("mcq", "one_word"):
+        correct = (q.get("answer") or "").strip()
+        if outcome == "full":
+            if q.get("options") and correct in q["options"]:
+                return f"({correct}) {q['options'][correct]}"
+            return correct
+        # wrong answer
+        if q.get("options"):
+            for k, v in q["options"].items():
+                if k != correct:
+                    return f"({k}) {v}"
+        return "Don't know"
+    # descriptive
+    kps = q.get("key_points") or []
+    if not kps:
+        return "Answer based on the prescribed concept with relevant explanation."
+    take = len(kps) if outcome == "full" else max(1, len(kps) // 2)
+    pts = kps[:take]
+    return ". ".join(pts) + "."
+
+
+def build_demo_answer_pages(candidate_code: str, scheme: list, subject: str = "Business Studies"):
+    """Render the candidate's REAL Business Studies answers (deterministic, mostly
+    correct) across several JPEG pages, returned as base64 strings. Gemini reads
+    these and grades them against the scheme -> a realistic score out of 80."""
+    W, H = 900, 1180
+    fb = _font(24)
+    fq = _font(20)
+    fa = _font(21)
+    margin = 40
+    line_h = 30
+    pages_b64 = []
+
+    def new_page(page_no):
+        img = Image.new("RGB", (W, H), (245, 242, 234))
+        d = ImageDraw.Draw(img)
+        d.rectangle([0, 0, W, 84], fill=(232, 227, 216))
+        d.line([0, 84, W, 84], fill=(150, 140, 120), width=2)
+        d.text((margin, 20), "CBSE CLASS XII  ·  ANSWER BOOKLET", font=fb, fill=(40, 36, 30))
+        d.text((margin, 52), f"{subject}  |  {candidate_code}", font=_font(15), fill=(80, 72, 60))
+        d.text((W - 150, 30), f"PAGE {page_no:02d}", font=fb, fill=(60, 54, 46))
+        return img, d
+
+    page_no = 1
+    img, d = new_page(page_no)
+    y = 110
+
+    def flush():
+        nonlocal pages_b64
+        buf = io.BytesIO()
+        img.save(buf, format="JPEG", quality=78)
+        pages_b64.append(base64.b64encode(buf.getvalue()).decode())
+
+    for q in scheme:
+        outcome = _outcome(candidate_code, q["q_no"])
+        ans = _student_answer(q, outcome)
+        wrapped = textwrap.wrap(ans, width=80) or [""]
+        block_h = line_h + len(wrapped) * line_h + 16
+        if y + block_h > H - 40:
+            flush()
+            page_no += 1
+            img, d = new_page(page_no)
+            y = 110
+        d.text((margin, y), f"{q['q_no']}.  [{q['marks']} mark]", font=fq, fill=(90, 70, 30))
+        y += line_h
+        for ln in wrapped:
+            d.text((margin + 24, y), ln, font=fa, fill=(28, 40, 90))
+            y += line_h
+        y += 16
+
+    flush()
+    return pages_b64

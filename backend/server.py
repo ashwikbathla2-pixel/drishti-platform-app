@@ -217,9 +217,14 @@ async def ai_read(bundle_id: str):
     result = None
     pages = b.get("pages")
     if pages:
-        result = await grader.grade_with_gemini(pdfp.images_for_grading(pages), scheme)
-        if result:
-            source = "gemini"
+        # real finalized upload -> grade the actual scanned pages
+        images = pdfp.images_for_grading(pages)
+    else:
+        # synthetic demo bundle -> render the candidate's real BS answers for Gemini
+        images = gen_page.build_demo_answer_pages(b["candidate_code"], scheme, b.get("subject", "Business Studies"))
+    result = await grader.grade_with_gemini(images, scheme)
+    if result:
+        source = "gemini"
     if not result:
         result = grader.demo_grade(scheme)
     ai_reading = {

@@ -1,0 +1,145 @@
+{
+  "theme_archetype": {
+    "domain": "Education/Forensic Evaluation",
+    "theme": "DARK",
+    "archetype": "Archetype 5 (Luxury) - Warm Forensic Dark",
+    "description": "A high-end, cinematic workspace for evaluating exam booklets. Feels like a precision forensic tool rather than a generic SaaS."
+  },
+  "global_colors": {
+    "css_variables": {
+      "--background": "#050508",
+      "--foreground": "#f0ece4",
+      "--card": "rgba(255, 255, 255, 0.03)",
+      "--card-foreground": "#f0ece4",
+      "--popover": "#0a0a09",
+      "--popover-foreground": "#f0ece4",
+      "--primary": "#f0ece4",
+      "--primary-foreground": "#050505",
+      "--secondary": "rgba(255, 255, 255, 0.04)",
+      "--secondary-foreground": "#f0ece4",
+      "--muted": "rgba(255, 255, 255, 0.04)",
+      "--muted-foreground": "rgba(240, 236, 228, 0.45)",
+      "--accent": "#e6c075",
+      "--accent-foreground": "#050505",
+      "--beam": "#e6c075",
+      "--ring": "#e6c075",
+      "--destructive": "#c0392b",
+      "--destructive-foreground": "#f0ece4",
+      "--border": "rgba(255, 255, 255, 0.06)",
+      "--input": "rgba(255, 255, 255, 0.06)",
+      "--verified": "#4ade80",
+      "--rejected": "#f87171",
+      "--flagged": "#fbbf24",
+      "--sidebar": "#030303",
+      "--sidebar-foreground": "rgba(240, 236, 228, 0.45)",
+      "--sidebar-accent": "#e6c075",
+      "--radius": "1rem"
+    },
+    "tailwind_config_extensions": {
+      "colors": {
+        "verified": "var(--verified)",
+        "rejected": "var(--rejected)",
+        "flagged": "var(--flagged)",
+        "beam": "var(--beam)"
+      }
+    }
+  },
+  "typography": {
+    "font_families": {
+      "sans": ["Libre Caslon Text", "serif"],
+      "serif": ["Instrument Serif", "serif"],
+      "mono": ["DM Mono", "monospace"]
+    },
+    "rules": {
+      "H1": "font-serif text-5xl md:text-6xl tracking-tight text-foreground not-italic",
+      "H2": "font-serif text-3xl md:text-4xl tracking-tight text-foreground italic",
+      "H3": "font-serif text-2xl tracking-tight text-foreground not-italic",
+      "H4_H6": "font-serif text-lg tracking-tight text-foreground not-italic",
+      "body": "font-sans text-base leading-relaxed text-foreground",
+      "subtitles_pull_quotes": "font-serif text-xl italic text-muted-foreground",
+      "eyebrows_labels_badges_table_headers": "font-mono uppercase tracking-[0.2em] text-[10px] md:text-[11px] text-muted-foreground"
+    }
+  },
+  "textures_and_effects": {
+    "film_grain": "SVG feTurbulence overlay. Create a fixed div z-50 pointer-events-none with opacity 0.025 and an SVG background url using fractalNoise.",
+    "hairline_separators": "Use class: bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.06),transparent)] h-px w-full",
+    "scan_beam": "1px champagne hairline beam divider: h-px w-full bg-beam shadow-[0_0_8px_rgba(230,192,117,0.5)]",
+    "glassmorphism": {
+      "glass": "bg-white/[0.025] backdrop-blur-[40px] backdrop-saturate-[1.8] border border-white/[0.06]",
+      "glass-strong": "bg-white/[0.025] backdrop-blur-[60px] backdrop-saturate-[1.8] border border-white/[0.06]",
+      "glass-nav": "bg-[#050505]/70 backdrop-blur-[60px] border-b border-white/[0.06]"
+    },
+    "webgl_hero": "WebGL dithered-waves shader hero: Champagne gold waves ([0.902, 0.753, 0.459]), Bayer 8x8 ordered dithering, retro/CRT look. Opacity 0.3 behind hero with radial warm glow + bottom fade. If true WebGL is overkill, use a highly textured looping video or CSS radial-gradient with the exact colors and film grain."
+  },
+  "motion_and_interactions": {
+    "entrances": "transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]",
+    "nav_morphing": "transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)]",
+    "hover_states": "Interactive elements must shift foreground color slightly or increase border opacity. Buttons get a subtle inner glow.",
+    "stagger": "Use Framer Motion to motion-stagger entrances (staggerChildren: 0.1) and scroll reveals."
+  },
+  "components": {
+    "buttons": {
+      "primary": "rounded-full bg-beam text-[#050505] font-sans font-medium px-6 py-2 hover:bg-white transition-colors duration-300",
+      "secondary": "rounded-full glass text-foreground font-sans px-6 py-2 hover:bg-white/[0.05] transition-colors duration-300",
+      "attributes": "All buttons MUST include data-testid attributes"
+    },
+    "cards": {
+      "base": "rounded-2xl glass p-6 relative overflow-hidden",
+      "role_selection": "Group hover effects: on hover, a pseudo-element with bg-beam/10 sweeps across the card, and border brightens."
+    },
+    "split_pane_workspace": {
+      "layout": "h-screen w-full flex overflow-hidden bg-background",
+      "left_pane_viewer": "flex-1 relative overflow-auto border-r border-white/[0.06] bg-black/50. Includes zoom controls (glass floating toolbar), document canvas.",
+      "right_pane_evaluation": "w-[400px] shrink-0 bg-popover flex flex-col overflow-auto border-l border-white/[0.06] p-6 gap-6",
+      "divider": "Interactive resizer with ScanBeam motif on drag."
+    },
+    "status_pills_badges": {
+      "base": "font-mono uppercase tracking-[0.2em] text-[10px] px-2 py-1 rounded-full border",
+      "verified": "text-verified border-verified/20 bg-verified/10",
+      "rejected": "text-rejected border-rejected/20 bg-rejected/10",
+      "flagged": "text-flagged border-flagged/20 bg-flagged/10"
+    },
+    "tables": {
+      "container": "w-full border-collapse",
+      "header": "font-mono uppercase tracking-[0.2em] text-[10px] text-muted-foreground border-b border-white/[0.06] pb-2 text-left",
+      "row": "border-b border-white/[0.02] hover:bg-white/[0.01] transition-colors",
+      "cell": "py-4 font-sans text-sm text-foreground"
+    },
+    "sidebar_rail": {
+      "container": "w-16 h-screen flex flex-col items-center py-6 bg-[var(--sidebar)] border-r border-white/[0.06]",
+      "icons": "text-sidebar-foreground hover:text-[var(--sidebar-accent)] transition-colors duration-300 cursor-pointer mb-6"
+    }
+  },
+  "image_urls": [
+    {
+      "url": "https://images.unsplash.com/photo-1715794792710-5a57e04db28f?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjY2NzN8MHwxfHNlYXJjaHwzfHxtYWNybyUyMHBhcGVyJTIwdGV4dHVyZSUyMGRhcmt8ZW58MHx8fHwxNzgxNTA2MDczfDA&ixlib=rb-4.1.0&q=85",
+      "category": "texture_overlay",
+      "description": "Black crumpled macro paper texture. Use as a multiply/screen blend layer for tactical document feel."
+    },
+    {
+      "url": "https://images.unsplash.com/photo-1710438399422-2fca27686bcd?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NjZ8MHwxfHNlYXJjaHwxfHxjaGFtcGFnbmUlMjBhYnN0cmFjdCUyMHdhdmVzJTIwZGFya3xlbnwwfHx8fDE3ODE1MDYwNzh8MA&ixlib=rb-4.1.0&q=85",
+      "category": "hero_background",
+      "description": "Abstract dark waves. Apply CSS filters (sepia, hue-rotate) to match the #e6c075 champagne gold if WebGL is unavailable."
+    },
+    {
+      "url": "https://images.unsplash.com/photo-1611330500121-d9439ddc3d9d?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAxODF8MHwxfHNlYXJjaHwyfHxmaW5nZXJwcmludCUyMHNjYW5uZXIlMjBkYXJrfGVufDB8fHx8MTc4MTUwNjA4M3ww&ixlib=rb-4.1.0&q=85",
+      "category": "forensic_illustration",
+      "description": "Dark fingerprint scanner motif. Useful for the authentication or 'AI thinking' evaluation state."
+    }
+  ],
+  "accessibility_and_testing": {
+    "contrast": "Ensure champagne text (#e6c075) and warm bone text (#f0ece4) meet minimum 4.5:1 ratio against #050508.",
+    "testing_attributes": "All buttons, inputs, links, and workspace toggles MUST use `data-testid` (e.g., `data-testid=\"workspace-zoom-in\"`, `data-testid=\"eval-submit-btn\"`)."
+  },
+  "instructions_to_main_agent": [
+    "1. Setup Tailwind config exactly with the CSS variables mapped. Note that colors in Tailwind will map to these CSS vars.",
+    "2. Add a global CSS setup that defines the `:root` variables provided in `global_colors.css_variables`.",
+    "3. Set up the 3 fonts via Google Fonts or Next/Font imports (Libre Caslon Text, Instrument Serif, DM Mono). NOTE: Set 'sans' to Libre Caslon Text in Tailwind config to make it the default.",
+    "4. Create the utility classes for `.glass`, `.glass-strong`, `.glass-nav` in the global CSS.",
+    "5. Build the `FilmGrain` component as a fixed full-screen SVG overlay, set pointer-events: none and z-index: 50.",
+    "6. Build the split-pane workspace as the primary view, enforcing the 'left side document viewer, right side evaluation tools' pattern.",
+    "7. Only use Champagne Gold (#e6c075) as the accent color. NO blue defaults from Shadcn.",
+    "8. Override Shadcn component styles: Radii must be `1rem` (rounded-2xl) for cards, and full for buttons. Remove generic borders, use the exact `border-white/[0.06]` utility.",
+    "9. ALWAYS use data-testid on all interactive elements to support robust automated testing."
+  ]
+}

@@ -39,13 +39,18 @@ export default function Landing() {
 
       {/* Hero */}
       <section className="relative min-h-screen flex items-center pt-28 pb-20">
-        <div className="absolute inset-0 -z-10">
-          <div className="absolute inset-0 opacity-30"><Dither /></div>
-          <div className="absolute inset-0" style={{ background: "radial-gradient(900px circle at 70% 30%, rgba(230,192,117,0.10), transparent 60%)" }} />
-          <div className="absolute inset-x-0 bottom-0 h-80" style={{ background: "linear-gradient(180deg, transparent, #050508)" }} />
+        <div className="absolute inset-0 z-0">
+          <div className="absolute inset-0 opacity-90">
+            <Dither waveColor={[0.902, 0.753, 0.459]} waveSpeed={0.12} waveFrequency={3}
+              waveAmplitude={0.3} colorNum={4} pixelSize={2} mouseRadius={0.7} enableMouseInteraction />
+          </div>
+          <div className="absolute inset-0" style={{ background: "radial-gradient(900px circle at 72% 32%, rgba(230,192,117,0.12), transparent 60%)" }} />
+          <div className="absolute inset-0" style={{ background: "rgba(5,5,8,0.28)" }} />
+          <div className="absolute inset-0" style={{ background: "linear-gradient(90deg, rgba(5,5,8,0.72) 0%, rgba(5,5,8,0.30) 48%, transparent 82%)" }} />
+          <div className="absolute inset-x-0 bottom-0 h-72" style={{ background: "linear-gradient(180deg, transparent, #050508)" }} />
         </div>
 
-        <div className="mx-auto max-w-6xl px-6 sm:px-8 grid lg:grid-cols-2 gap-14 items-center w-full">
+        <div className="relative z-10 mx-auto max-w-6xl px-6 sm:px-8 grid lg:grid-cols-2 gap-14 items-center w-full">
           <motion.div initial="hidden" animate="show"
             variants={{ hidden: {}, show: { transition: { staggerChildren: 0.12 } } }}>
             {[

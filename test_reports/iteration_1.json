@@ -1,0 +1,46 @@
+{
+  "summary": "Tested Drishti AI Evaluation Platform end-to-end. Backend: 19/19 pytest cases pass (auth roles, scheme=34Qs/80, stats, queue, deviations, ai-read, evaluate w/ deviations, bundle page image, audit, approve/reevaluate, generate+persist, full PDF pipeline upload->get->finalize->download). Frontend: Landing hero + Open Console -> /login, all 4 role cards work, sidebar shows role, Switch Role returns to /login. Dashboard 'Ask Drishti' composer + Generate & Evaluate navigates to /dashboard/answers with answer rendered. Marking queue lists 4 bundles, Grade Booklet opens split workspace with PageViewer (zoom/next/prev/thumbnails testids all present), Run AI Grade populates AI Second Reader on a fresh bundle, per-Q AI grades + justifications shown. Audit page lists deviations, uphold-btn & reeval-btn render. Scan Intake renders dropzone + pdf-input.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "Marking — Submit Grading",
+        "issue": "Submit Grading button is not visually/disabled-attribute disabled when not all 34 questions marked or not all pages viewed. The block is implemented as an inline toast after click. UX expectation per spec is that the button is blocked (disabled). Button renders enabled even at 0/24 viewed and 0/34 marked.",
+        "selector": "[data-testid=\"submit-grading\"]",
+        "priority": "MEDIUM"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_drishti_api.py",
+    "/app/test_reports/pytest/drishti_results.xml"
+  ],
+  "action_items": [
+    "Optional UX: disable [data-testid=\"submit-grading\"] when !allMarked || !allViewed in Marking.jsx (currently only toasts on click).",
+    "Optional polish: the 'Run AI Grade' button only renders when bundle.ai_reading is null. Synthetic seeded bundles previously read by tests will not show the button (expected, working as designed)."
+  ],
+  "critical_code_review_comments": [
+    "server.py uses os.environ[...] directly (no defaults) — good fail-fast pattern (per env rules).",
+    "Mongo _id correctly excluded via projection {'_id': 0} across endpoints.",
+    "PDF pipeline endpoint correctly returns 400 when unfixed flagged pages remain.",
+    "JWT token minted on /auth/login but no auth middleware verifies it on subsequent endpoints — acceptable for this no-password role-based MVP but worth noting; any role can hit any /api/v1 route without token. If role-gated access is desired, add a dependency."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_drishti_api.py (new)"
+  ],
+  "success_rate": {
+    "backend": "100%",
+    "frontend": "95%"
+  },
+  "test_credentials": "Role-based login, no password. Use data-testid role-evaluator/role-moderator/role-scan_operator/role-admin on /login (per /app/memory/test_credentials.md).",
+  "seed_data_creation": "PDF upload test created an in-DB bundle 'TEST_CAND_001' (3 pages) from a reportlab-generated multi-page PDF. Stored as a bundle in MongoDB after finalize.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend base path is /api/v1 (NOT /api). Use REACT_APP_BACKEND_URL. To verify Run AI Grade UI control, use a bundle WITHOUT pre-existing ai_reading (e.g., grade-bundle-002 / grade-bundle-003); bundle-001 will be AI-read after backend tests run. PDF upload integration was tested using a generated 3-page PDF (reportlab). Gemini key is configured and returns 'gemini' source on real uploads.",
+  "rca of the issue": "Submit Grading button: in Marking.jsx the button has disabled={submitting} only; the allMarked/allViewed guard lives inside submit() handler which toasts and returns early. Fix: set disabled={submitting || !allMarked || !allViewed} on the submit-grading button to match spec."
+}
